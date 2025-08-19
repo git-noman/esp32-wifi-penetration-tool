@@ -59,4 +59,6 @@ void attack_dos_stop() {
             ESP_LOGE(TAG, "Unknown attack method! Attack may not be stopped properly.");
     }
     ESP_LOGI(TAG, "DoS attack stopped");
+
+    attack_update_status(FINISHED);
 }
