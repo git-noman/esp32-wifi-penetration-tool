@@ -20,27 +20,18 @@
 #include "attack.h"
 #include "wifi_controller.h"
 #include "webserver.h"
-#include "st7735.h"
+#include "display.h"
 
 static const char* TAG = "main";
 
 void app_main(void)
 {
     ESP_LOGD(TAG, "app_main started");
-    st7735_handle_t tft;
-    memset(&tft, 0, sizeof(tft));
-
-    esp_err_t r = st7735_init(&tft);
-    if (r != ESP_OK) {
-        ESP_LOGE(TAG, "ST7735 init failed: %d", r);
-        return;
-    }
-
-    st7735_fill_color(&tft, 0x07E0);
-    st7735_draw_string(&tft, "Hello!", 10, 10, 0xFFFF, 0x0000); // white text
+    display_init();
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     wifictl_mgmt_ap_start();
     attack_init();
     webserver_run();
+    st7735_draw_string(&tft, "initialized", 20, 20, 0xFFFF, 0x0000);
 }
