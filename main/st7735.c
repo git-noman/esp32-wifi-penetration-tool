@@ -216,6 +216,17 @@ void st7735_draw_string(st7735_handle_t *dev, const char *str, int16_t x, int16_
     }
 }
 
+int16_t st7735_center_x(const char *str) {
+    int len = strlen(str);
+    int total_width = len * 6; // 5 px per char + 1 px spacing
+    return (ST7735_WIDTH - total_width) / 2;
+}
+
+int16_t st7735_center_y() {
+    return (ST7735_HEIGHT - 8) / 2; // font height is 8 px
+}
+
+
 void st7735_deinit(st7735_handle_t *dev)
 {
     if (dev->spi) {

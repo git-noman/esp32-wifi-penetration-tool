@@ -25,5 +25,11 @@ void st7735_draw_char(st7735_handle_t *dev, char c, int16_t x, int16_t y, uint16
 // Draw string
 void st7735_draw_string(st7735_handle_t *dev, const char *str, int16_t x, int16_t y, uint16_t color, uint16_t bg);
 
+// Center x
+int16_t st7735_center_x(const char *str);
+
+// Center y
+int16_t st7735_center_y();
+
 // Deinit if you want (optional)
 void st7735_deinit(st7735_handle_t *dev);
