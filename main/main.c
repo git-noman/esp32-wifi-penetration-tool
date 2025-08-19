@@ -36,7 +36,8 @@ void app_main(void)
         return;
     }
 
-    st7735_fill_color(&tft, 0xF800);
+    st7735_fill_color(&tft, 0x07E0);
+    st7735_draw_string(&tft, "Hello!", 10, 10, 0xFFFF, 0x0000); // white text
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     wifictl_mgmt_ap_start();

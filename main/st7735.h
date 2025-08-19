@@ -16,5 +16,14 @@ esp_err_t st7735_init(st7735_handle_t *dev);
 // Fill whole screen with RGB565 color
 esp_err_t st7735_fill_color(st7735_handle_t *dev, uint16_t color);
 
+// Draw a single pixel
+void st7735_draw_pixel(st7735_handle_t *dev, uint16_t x, uint16_t y, uint16_t color);
+
+// Draw one character
+void st7735_draw_char(st7735_handle_t *dev, char c, int16_t x, int16_t y, uint16_t color, uint16_t bg);
+
+// Draw string
+void st7735_draw_string(st7735_handle_t *dev, const char *str, int16_t x, int16_t y, uint16_t color, uint16_t bg);
+
 // Deinit if you want (optional)
 void st7735_deinit(st7735_handle_t *dev);

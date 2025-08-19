@@ -4,6 +4,7 @@
 #include "driver/spi_master.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "font5x7.h"
 
 static const char *TAG = "ST7735";
 
@@ -175,6 +176,44 @@ esp_err_t st7735_fill_color(st7735_handle_t *dev, uint16_t color)
         st7735_send_data(dev, line, sizeof(line));
     }
     return ESP_OK;
+}
+
+// Draw a single pixel
+void st7735_draw_pixel(st7735_handle_t *dev, uint16_t x, uint16_t y, uint16_t color) {
+    st7735_set_window(dev, x, y, x, y);
+    st7735_send_cmd(dev, 0x2C);
+    uint8_t buf[2] = { color >> 8, color & 0xFF };
+    st7735_send_data(dev, buf, 2);
+}
+
+// Draw one character at (x,y) with foreground and background colors
+void st7735_draw_char(st7735_handle_t *dev, char c, int16_t x, int16_t y, uint16_t color, uint16_t bg) {
+    if (c < 32 || c > 127) return; // only printable ASCII
+
+    const uint8_t *bitmap = font5x7[c - 32];
+    for (int8_t col = 0; col < 5; col++) {      // 5 columns
+        uint8_t bits = bitmap[col];
+        for (int8_t row = 0; row < 8; row++) {  // 8 rows (max)
+            if (bits & 0x1) {
+                st7735_draw_pixel(dev, x + col, y + row, color);
+            } else {
+                st7735_draw_pixel(dev, x + col, y + row, bg);
+            }
+            bits >>= 1;
+        }
+    }
+    // Optional: 1-pixel spacing between characters
+    for (int8_t row = 0; row < 8; row++) {
+        st7735_draw_pixel(dev, x + 5, y + row, bg);
+    }
+}
+
+void st7735_draw_string(st7735_handle_t *dev, const char *str, int16_t x, int16_t y, uint16_t color, uint16_t bg) {
+    while (*str) {
+        st7735_draw_char(dev, *str, x, y, color, bg);
+        x += 6;  // 5 pixels character + 1 pixel spacing
+        str++;
+    }
 }
 
 void st7735_deinit(st7735_handle_t *dev)
