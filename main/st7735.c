@@ -216,6 +216,38 @@ void st7735_draw_string(st7735_handle_t *dev, const char *str, int16_t x, int16_
     }
 }
 
+void st7735_draw_char_scaled(st7735_handle_t *dev, char c, int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t scale) {
+    if (c < 32 || c > 127) return;
+
+    const uint8_t *bitmap = font5x7[c - 32];
+    for (int8_t col = 0; col < 5; col++) {
+        uint8_t bits = bitmap[col];
+        for (int8_t row = 0; row < 8; row++) {
+            uint16_t px_color = (bits & 0x1) ? color : bg;
+            // draw a square of size scale x scale
+            for (uint8_t i = 0; i < scale; i++) {
+                for (uint8_t j = 0; j < scale; j++) {
+                    st7735_draw_pixel(dev, x + col*scale + i, y + row*scale + j, px_color);
+                }
+            }
+            bits >>= 1;
+        }
+    }
+    // optional spacing
+    for (int8_t row = 0; row < 8*scale; row++) {
+        for (uint8_t i = 0; i < scale; i++)
+            st7735_draw_pixel(dev, x + 5*scale + i, y + row, bg);
+    }
+}
+
+void st7735_draw_string_scaled(st7735_handle_t *dev, const char *str, int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t scale) {
+    while (*str) {
+        st7735_draw_char_scaled(dev, *str, x, y, color, bg, scale);
+        x += 6 * scale; // 5 px char + 1 spacing, multiplied by scale
+        str++;
+    }
+}
+
 int16_t st7735_center_x(const char *str) {
     int len = strlen(str);
     int total_width = len * 6; // 5 px per char + 1 px spacing
@@ -226,6 +258,15 @@ int16_t st7735_center_y() {
     return (ST7735_HEIGHT - 8) / 2; // font height is 8 px
 }
 
+int16_t st7735_center_x_scaled(const char *str, uint8_t scale) {
+    int len = strlen(str);
+    int total_width = len * 6 * scale; // scaled width
+    return (ST7735_WIDTH - total_width) / 2;
+}
+
+int16_t st7735_center_y_scaled(uint8_t scale) {
+    return (ST7735_HEIGHT - 8 * scale) / 2; // scaled height
+}
 
 void st7735_deinit(st7735_handle_t *dev)
 {

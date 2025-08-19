@@ -25,11 +25,23 @@ void st7735_draw_char(st7735_handle_t *dev, char c, int16_t x, int16_t y, uint16
 // Draw string
 void st7735_draw_string(st7735_handle_t *dev, const char *str, int16_t x, int16_t y, uint16_t color, uint16_t bg);
 
+// Draw scaled char
+void st7735_draw_char_scaled(st7735_handle_t *dev, char c, int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t scale);
+
+// Draw scaled string
+void st7735_draw_string_scaled(st7735_handle_t *dev, const char *str, int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t scale);
+
 // Center x
 int16_t st7735_center_x(const char *str);
 
 // Center y
 int16_t st7735_center_y();
+
+// Center x scaled
+int16_t st7735_center_x_scaled(const char *str, uint8_t scale);
+
+// Center y scaled
+int16_t st7735_center_y_scaled(uint8_t scale);
 
 // Deinit if you want (optional)
 void st7735_deinit(st7735_handle_t *dev);
