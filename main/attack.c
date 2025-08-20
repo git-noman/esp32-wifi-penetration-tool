@@ -24,6 +24,7 @@
  #include "webserver.h"
  #include "wifi_controller.h"
  #include "driver/gpio.h"
+ #include "display.h"
 
  #define BLUE_LED_PIN 2   // change this if your board uses a different GPIO
 
@@ -143,6 +144,9 @@
          ESP_ERROR_CHECK(esp_timer_start_once(attack_timeout_handle, attack_config.timeout * 1000000));
      }
 
+     // turn display red
+     st7735_fill_color(&tft, 0xF800);
+
      // start attack based on it's type
      switch(attack_config.type) {
          case ATTACK_TYPE_PMKID:
@@ -155,6 +159,16 @@
              ESP_LOGW(TAG, "ATTACK_TYPE_PASSIVE not implemented yet!");
              break;
          case ATTACK_TYPE_DOS:
+             st7735_draw_string(&tft, "dos attack", 10, 10, 0xFFFF, 0x0000);
+             char buf[32];
+             snprintf(buf, sizeof(buf), "timeout: %d", attack_config.timeout);
+             st7735_draw_string(&tft, buf, 10, 20, 0xFFFF, 0x0000);
+
+             st7735_draw_string(&tft, "target:", 10, 30, 0xFFFF, 0x0000);
+             char buftwo[64];
+             snprintf(buftwo, sizeof(buftwo), "%s", attack_config.ap_record->ssid);
+             st7735_draw_string(&tft, buftwo, 10, 40, 0xFFFF, 0x0000);
+
              attack_dos_start(&attack_config);
              break;
          default:

@@ -33,5 +33,5 @@ void app_main(void)
     wifictl_mgmt_ap_start();
     attack_init();
     webserver_run();
-    st7735_draw_string(&tft, "initialized", 20, 20, 0xFFFF, 0x0000);
+    st7735_draw_string(&tft, "initialized", 10, 20, 0xFFFF, 0x0000);
 }
